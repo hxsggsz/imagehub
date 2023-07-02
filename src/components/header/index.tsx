@@ -7,8 +7,8 @@ export const Header = () => {
   const { data: session } = useSession();
 
   return (
-    <header className="fixed left-0 top-0 flex w-screen items-center justify-between border-b border-sky-900 py-3 pr-8 shadow-md">
-      <Link href="/">
+    <header className="fixed left-0 top-0 flex w-screen items-center justify-between border-b border-sky-900 py-3 pr-8 shadow-md backdrop-blur-sm">
+      <Link href="/" passHref>
         <Image width={100} height={100} src="/favicon.png" alt="page logo" />
       </Link>
 
@@ -16,7 +16,9 @@ export const Header = () => {
         <div className="flex items-center gap-2">
           <div className="text-end">
           {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
-            <p>{`@${session.user.name}`}</p>
+            <p className="text-slate-900/60">Hi, {" "}
+              <span className="font-medium text-cyan-800">{session.user.name}</span>
+            </p>
             <p onClick={() => void signOut()} className="cursor-pointer text-sm text-red-700 hover:underline">log off</p>
           </div>
           <Avatar.Root className="inline-flex h-12 w-12 select-none items-center justify-center overflow-hidden rounded-full align-middle">
