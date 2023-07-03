@@ -7,7 +7,7 @@ interface SubmitProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Submit = ({ children, ...props }: SubmitProps) => {
   return (
-    <Button {...props} isFullScreen>
+    <Button {...props} className="w-full" isFullScreen>
       {children}
     </Button>
   )

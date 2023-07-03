@@ -10,25 +10,30 @@ export const CreateFolder = () => {
     <>
       {sessionData ? (
         <div>
-          <div className="flex items-center gap-4">
-            <h1 className="w-full text-4xl font-bold text-cyan-700">
-              Create a Folder
-            </h1>
-            <Image
-              width={100}
-              height={100}
-              className="mr-12"
-              src="/favicon.png"
-              alt="logo"
-            />
-          </div>
+          <Image
+            width={100}
+            height={100}
+            className="mr-12"
+            src="/favicon.png"
+            alt="logo"
+          />
+          <h1 className="mb-2 w-full text-4xl font-bold text-cyan-700">
+            Create a Folder
+          </h1>
           <p className="mb-2 text-2xl">
             Add a new folder to organize your files
           </p>
-          <Button asChild>
+          <Button className="max-md:hidden" asChild>
             <Link href={{ pathname: '/', query: { new: '1' } }}>
               <FolderNotchPlus size={24} weight="bold" />
               Create new Folder
+            </Link>
+          </Button>
+
+          <Button className="md:hidden" asChild>
+            <Link href={{ pathname: '/', query: { folders: '1' } }}>
+              <FolderNotchPlus size={24} weight="bold" />
+              See your folders
             </Link>
           </Button>
         </div>

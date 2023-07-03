@@ -1,13 +1,11 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
-import Image from 'next/image'
-import Link from 'next/link'
 import * as Avatar from '@radix-ui/react-avatar'
 
 export const Header = () => {
   const { data: session } = useSession()
 
   return (
-    <header className="fixed left-0 top-0 flex items-center py-3 pl-8">
+    <header className="fixed left-0 top-0 flex items-center py-3 pl-8 max-md:w-full max-md:border-b-2 max-md:border-slate-900/20">
       {session ? (
         <div className="flex items-center gap-2">
           <Avatar.Root className="inline-flex h-12 w-12 select-none items-center justify-center overflow-hidden rounded-full align-middle">
