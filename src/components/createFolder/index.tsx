@@ -2,6 +2,7 @@ import { signIn, useSession } from 'next-auth/react'
 import { Button } from '../button'
 import { FolderNotchPlus } from '@phosphor-icons/react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export const CreateFolder = () => {
   const { data: sessionData } = useSession()
@@ -24,9 +25,11 @@ export const CreateFolder = () => {
           <p className="mb-2 text-2xl">
             Add a new folder to organize your files
           </p>
-          <Button>
-            <FolderNotchPlus size={24} weight="bold" />
-            Create new Folder
+          <Button asChild>
+            <Link href={{ pathname: '/', query: { new: '1' } }}>
+              <FolderNotchPlus size={24} weight="bold" />
+              Create new Folder
+            </Link>
           </Button>
         </div>
       ) : (

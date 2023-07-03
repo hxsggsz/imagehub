@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react'
 
 interface ContentProps {
   children: ReactNode
@@ -17,5 +17,5 @@ export const Content = ({ children, title, date }: ContentProps) => {
         {date}
       </h1>
     </div>
-  );
-};
+  )
+}
