@@ -6,17 +6,24 @@ import { Button } from '../button'
 import Link from 'next/link'
 import { useUploadThing } from '@/utils/uploadthing'
 import { type ChangeEvent, type FormEvent, useState } from 'react'
-
-interface FoldersProps {}
+import { api } from '@/utils/api'
+import { useSession } from 'next-auth/react'
 
 const menu = [
   { label: 'teste', onSelect: (id: string) => console.log('teste', id) },
 ]
 
-export const Folders = ({}: FoldersProps) => {
+export const Folders = () => {
   const router = useRouter()
   const [files, setFiles] = useState('')
+  const [error, setError] = useState('')
+  const { data: session } = useSession()
+  const [folderName, setFolderName] = useState('')
   const [imageToUpload, setImageToUpload] = useState<File[]>([])
+  const { data: folders } = api.folders.getAll.useQuery(undefined, {
+    enabled: session?.user !== undefined,
+  })
+  const createFolder = api.folders.createFolder.useMutation({})
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
     const { files } = ev.target
@@ -37,7 +44,22 @@ export const Folders = ({}: FoldersProps) => {
 
   function handleSubmit(ev: FormEvent<HTMLFormElement>) {
     ev.preventDefault()
-    void startUpload(imageToUpload)
+    if (folderName.length < 3 || folderName.length > 30) {
+      setError('name too big or too short')
+      return
+    }
+
+    imageToUpload && void startUpload(imageToUpload)
+
+    createFolder.mutate({
+      name: folderName,
+    })
+
+    if (createFolder.isSuccess) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      router.push('/')
+      setError('')
+    }
   }
 
   return (
@@ -46,6 +68,11 @@ export const Folders = ({}: FoldersProps) => {
         <>
           <Form.Back />
           <Form.Root onSubmit={handleSubmit}>
+            <Form.Input
+              value={folderName}
+              onChange={(ev) => setFolderName(ev.currentTarget.value)}
+              placeholder="Folder's name"
+            />
             <Form.Media>
               <input
                 id="mediaPicker"
@@ -58,9 +85,8 @@ export const Folders = ({}: FoldersProps) => {
               <CameraPlus size={28} weight="bold" />
               Add media
             </Form.Media>
-            <Form.Input placeholder="Folder's name" />
             <Form.Preview image={files} />
-            <Form.Submit>teste</Form.Submit>
+            <Form.Submit disabled={createFolder.isLoading}>teste</Form.Submit>
           </Form.Root>
         </>
       ) : (
@@ -75,18 +101,19 @@ export const Folders = ({}: FoldersProps) => {
               </Link>
             </Button>
           </div>
-          <Card.Root>
-            <Card.Image image="/background-default1.jpg" />
-            <Card.Content title="title of the folder" date="1 hour">
-              <Card.Menu id="teste" items={menu} />
-            </Card.Content>
-          </Card.Root>
-          <Card.Root>
-            <Card.Image image="/background-default1.jpg" />
-            <Card.Content title="title of the folder" date="1 hour">
-              <Card.Menu id="teste" items={menu} />
-            </Card.Content>
-          </Card.Root>
+
+          {folders && folders.length > 1 ? (
+            folders.map((folder) => (
+              <Card.Root key={folder.id}>
+                <Card.Image image={folder.backgroundImage} />
+                <Card.Content title={folder.name} date="1 hour">
+                  <Card.Menu id={folder.id} items={menu} />
+                </Card.Content>
+              </Card.Root>
+            ))
+          ) : (
+            <h1>teste</h1>
+          )}
         </>
       )}
     </div>
