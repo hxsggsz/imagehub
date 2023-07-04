@@ -1,17 +1,22 @@
 import Image from 'next/image'
 
 interface PreviewProps {
-  image: string
+  image: string | undefined
 }
 
 export const Preview = ({ image }: PreviewProps) => {
   return (
-    <Image
-      src={image}
-      width={350}
-      height={100}
-      alt="preview of the folder image"
-      className="mt-2 rounded-md border-4 border-b-[6px] border-cyan-700"
-    />
+    <>
+      {image && (
+        <Image
+          src={image}
+          width={350}
+          height={100}
+          quality={100}
+          alt="preview of the folder image"
+          className="mt-2 min-h-[360px] w-full rounded-md border-4 border-b-[6px] border-cyan-700"
+        />
+      )}
+    </>
   )
 }

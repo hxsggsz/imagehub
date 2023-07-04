@@ -1,15 +1,13 @@
-import { type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
-interface MediaProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface MediaProps {
   children: ReactNode
 }
 
-export const Media = ({ children, ...props }: MediaProps) => {
+export const Media = ({ children }: MediaProps) => {
   return (
-    <div className="flex w-full justify-start">
-      <button {...props} className="flex items-center gap-2 text-cyan-100">
-        {children}
-      </button>
-    </div>
+    <label className="flex w-full cursor-pointer items-center justify-start gap-4 text-cyan-100">
+      {children}
+    </label>
   )
 }

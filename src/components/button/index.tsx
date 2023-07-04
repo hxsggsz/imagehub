@@ -15,7 +15,7 @@ export const Button = ({ children, asChild, ...props }: ButtonProps) => {
       <Comp
         {...props}
         className={twMerge(
-          'absolute flex items-center gap-2 rounded-xl border-[1px] border-b-[6px] border-slate-900 bg-cyan-700 px-6 py-2 font-semibold text-cyan-100 transition-all hover:bg-cyan-900 active:translate-y-2 active:border-b-[1px] max-md:w-full',
+          'absolute flex items-center justify-center gap-2 rounded-xl border-[1px] border-b-[6px] border-slate-900 bg-cyan-700 px-6 py-2 text-2xl font-bold text-cyan-100 transition-all hover:bg-cyan-900 active:translate-y-2 active:border-b-[1px] max-md:w-full',
           props.className,
         )}
       >

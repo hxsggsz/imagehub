@@ -24,14 +24,14 @@ export const CreateFolder = () => {
             Add a new folder to organize your files
           </p>
           <Button className="max-md:hidden" asChild>
-            <Link href={{ pathname: '/', query: { new: '1' } }}>
+            <Link href={{ pathname: '/', query: { new: 'open' } }}>
               <FolderNotchPlus size={24} weight="bold" />
               Create new Folder
             </Link>
           </Button>
 
           <Button className="md:hidden" asChild>
-            <Link href={{ pathname: '/', query: { folders: '1' } }}>
+            <Link href={{ pathname: '/', query: { folders: 'open' } }}>
               <FolderNotchPlus size={24} weight="bold" />
               See your folders
             </Link>

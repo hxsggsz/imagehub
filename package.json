@@ -22,14 +22,17 @@
     "@trpc/next": "^10.26.0",
     "@trpc/react-query": "^10.26.0",
     "@trpc/server": "^10.26.0",
+    "@uploadthing/react": "^5.1.0",
     "framer-motion": "^10.12.18",
     "next": "^13.4.2",
     "next-auth": "^4.22.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
     "superjson": "1.12.2",
     "tailwind-merge": "^1.13.2",
     "tailwind-scrollbar": "^3.0.4",
+    "uploadthing": "^5.1.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["jsonProtocol"]
 }
 
@@ -15,10 +15,20 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
+model Folders {
+    id              String   @id @default(cuid())
+    createdAt       DateTime @default(now())
+    name            String
+    backgroundImage String
+    images          Images[]
+}
+
+model Images {
     id        String   @id @default(cuid())
+    image     String
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    Folders   Folders? @relation(fields: [foldersId], references: [id])
+    foldersId String?
 }
 
 // Necessary for Next auth
