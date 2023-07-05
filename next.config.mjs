@@ -21,7 +21,7 @@ const config = {
     defaultLocale: 'en',
   },
   images: {
-    domains: ['i.pinimg.com'],
+    domains: ['i.pinimg.com', 'uploadthing.com'],
   },
 }
 

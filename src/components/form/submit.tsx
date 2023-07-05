@@ -3,11 +3,12 @@ import { Button } from '../button'
 
 interface SubmitProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
+  IsLoading?: boolean
 }
 
-export const Submit = ({ children, ...props }: SubmitProps) => {
+export const Submit = ({ children, IsLoading, ...props }: SubmitProps) => {
   return (
-    <Button {...props} className="w-full">
+    <Button {...props} isLoading={IsLoading} className="w-full">
       {children}
     </Button>
   )

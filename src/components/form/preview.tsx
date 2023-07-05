@@ -14,7 +14,7 @@ export const Preview = ({ image }: PreviewProps) => {
           height={100}
           quality={100}
           alt="preview of the folder image"
-          className="mt-2 min-h-[360px] w-full rounded-md border-4 border-b-[6px] border-cyan-700"
+          className="mt-2 max-h-[360px] w-full rounded-md border-4 border-b-[6px] border-cyan-700"
         />
       )}
     </>

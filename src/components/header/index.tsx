@@ -34,7 +34,7 @@ export const Header = () => {
         </div>
       ) : (
         <div
-          onClick={() => void signIn()}
+          onClick={() => void signIn('github')}
           className="flex cursor-pointer items-center gap-2 text-slate-900/60 underline hover:text-slate-900/40"
         >
           <div className="h-12 w-12 rounded-full bg-slate-700/10" />

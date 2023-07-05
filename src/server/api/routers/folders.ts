@@ -1,22 +1,22 @@
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
-import { imageDefault } from '@/utils/imageDefault'
-
-const random = Math.floor(Math.random() * 6 + 1)
 
 export const folderRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.folders.findMany({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.folders.findMany({
       where: {
         userId: ctx.session.user.id,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     })
   }),
 
   getUnique: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.folders.findUnique({
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.folders.findUnique({
         where: {
           id: input.id,
         },
@@ -30,15 +30,25 @@ export const folderRouter = createTRPCRouter({
           .string()
           .min(3, 'name is too short')
           .max(30, 'name is too long'),
-        backgroundImage: z.string().url().optional(),
+        backgroundImage: z.string().url(),
       }),
     )
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.folders.create({
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.folders.create({
         data: {
           name: input.name,
           userId: ctx.session.user.id,
-          backgroundImage: input.backgroundImage ?? imageDefault(random),
+          backgroundImage: input.backgroundImage,
+        },
+      })
+    }),
+
+  deleteFolder: protectedProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.folders.delete({
+        where: {
+          id: input.id,
         },
       })
     }),

@@ -38,7 +38,10 @@ export const CreateFolder = () => {
           </Button>
         </div>
       ) : (
-        <h1 onClick={() => void signIn()} className="text-2xl opacity-60">
+        <h1
+          onClick={() => void signIn('github')}
+          className="text-2xl opacity-60"
+        >
           <span className="cursor-pointer underline hover:opacity-50">
             Login
           </span>{' '}

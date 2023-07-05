@@ -11,7 +11,7 @@ export const ImageCard = ({ image }: ImageCardProps) => {
       src={image}
       width={512}
       height={100}
-      className="pointer-events-none select-none rounded-t-md"
+      className="pointer-events-none aspect-video h-[280px] select-none rounded-t-md object-cover"
     />
   )
 }

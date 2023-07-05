@@ -7,23 +7,47 @@ import Link from 'next/link'
 import { useUploadThing } from '@/utils/uploadthing'
 import { type ChangeEvent, type FormEvent, useState } from 'react'
 import { api } from '@/utils/api'
-import { useSession } from 'next-auth/react'
+import { imageDefault } from '@/utils/imageDefault'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
-const menu = [
-  { label: 'teste', onSelect: (id: string) => console.log('teste', id) },
-]
+dayjs.extend(relativeTime)
 
 export const Folders = () => {
   const router = useRouter()
+
   const [files, setFiles] = useState('')
-  const [error, setError] = useState('')
-  const { data: session } = useSession()
-  const [folderName, setFolderName] = useState('')
+  const [fileName, setFileName] = useState('')
   const [imageToUpload, setImageToUpload] = useState<File[]>([])
-  const { data: folders } = api.folders.getAll.useQuery(undefined, {
-    enabled: session?.user !== undefined,
+
+  const { data: folders } = api.folders.getAll.useQuery()
+  const ctx = api.useContext()
+  const deleteFolder = api.folders.deleteFolder.useMutation({
+    onSuccess: () => ctx.folders.getAll.invalidate(),
   })
-  const createFolder = api.folders.createFolder.useMutation({})
+  const createFolder = api.folders.createFolder.useMutation({
+    onSuccess: () => {
+      setFiles('')
+      setFileName('')
+      void ctx.folders.getAll.invalidate()
+      void router.replace({ pathname: '/', query: { folders: 'open' } })
+    },
+  })
+
+  const menu = [
+    {
+      label: 'Delete folder',
+      onSelect: (id: string) => deleteFolder.mutate({ id }),
+    },
+  ]
+
+  /**
+   * todo:
+   *  add animation on create and delete cards
+   * make this component more clean and separete the logic on custom hooks
+   * investigate why the folders dont show if there is less than two
+   * add skeleton when the folders are loading
+   */
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
     const { files } = ev.target
@@ -33,33 +57,26 @@ export const Folders = () => {
     setFiles(preview)
   }
 
-  const { startUpload } = useUploadThing('imageUploader', {
+  const { startUpload, isUploading } = useUploadThing('imageUploader', {
     onClientUploadComplete: (file) => {
-      console.log('uploaded successfully!', file)
+      const random = Math.floor(Math.random() * 6 + 1)
+      // eslint-disable-next-line array-callback-return
+      file?.map((file) => {
+        createFolder.mutate({
+          name: fileName,
+          backgroundImage:
+            file.fileUrl !== '' ? file.fileUrl : imageDefault(random),
+        })
+      })
     },
     onUploadError: () => {
-      alert('error occurred while uploading')
+      console.error('error occurred while uploading photo')
     },
   })
 
-  function handleSubmit(ev: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(ev: FormEvent<HTMLFormElement>) {
     ev.preventDefault()
-    if (folderName.length < 3 || folderName.length > 30) {
-      setError('name too big or too short')
-      return
-    }
-
-    imageToUpload && void startUpload(imageToUpload)
-
-    createFolder.mutate({
-      name: folderName,
-    })
-
-    if (createFolder.isSuccess) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      router.push('/')
-      setError('')
-    }
+    await startUpload(imageToUpload)
   }
 
   return (
@@ -67,10 +84,11 @@ export const Folders = () => {
       {router.query.new ? (
         <>
           <Form.Back />
+          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <Form.Root onSubmit={handleSubmit}>
             <Form.Input
-              value={folderName}
-              onChange={(ev) => setFolderName(ev.currentTarget.value)}
+              value={fileName}
+              onChange={(ev) => setFileName(ev.currentTarget.value)}
               placeholder="Folder's name"
             />
             <Form.Media>
@@ -83,10 +101,20 @@ export const Folders = () => {
                 onChange={handleImage}
               />
               <CameraPlus size={28} weight="bold" />
-              Add media
+              Add media (optional)
             </Form.Media>
             <Form.Preview image={files} />
-            <Form.Submit disabled={createFolder.isLoading}>teste</Form.Submit>
+            {createFolder.error?.data?.zodError?.fieldErrors?.name && (
+              <Form.Error>
+                {createFolder.error.data.zodError.fieldErrors.name}
+              </Form.Error>
+            )}
+            <Form.Submit
+              IsLoading={createFolder.isLoading || isUploading}
+              disabled={createFolder.isLoading || isUploading}
+            >
+              teste
+            </Form.Submit>
           </Form.Root>
         </>
       ) : (
@@ -106,7 +134,10 @@ export const Folders = () => {
             folders.map((folder) => (
               <Card.Root key={folder.id}>
                 <Card.Image image={folder.backgroundImage} />
-                <Card.Content title={folder.name} date="1 hour">
+                <Card.Content
+                  title={folder.name}
+                  date={dayjs(folder.createdAt).fromNow()}
+                >
                   <Card.Menu id={folder.id} items={menu} />
                 </Card.Content>
               </Card.Root>
