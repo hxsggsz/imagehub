@@ -6,7 +6,7 @@ export const Input = ({ ...props }: InputProps) => {
   return (
     <input
       {...props}
-      className="w-full border-inherit bg-inherit text-lg text-cyan-100 outline-none placeholder:text-slate-400"
+      className="w-full border-inherit bg-inherit text-lg text-cyan-50 outline-none placeholder:text-slate-400"
     />
   )
 }

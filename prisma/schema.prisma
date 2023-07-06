@@ -21,7 +21,7 @@ model Folders {
     name               String   @unique
     user               User     @relation(fields: [userId], references: [id])
     backgroundImage    String   @unique
-    backgroundImageKey String   @unique
+    backgroundImageKey String?  @unique
     images             Images[]
     userId             String
 }

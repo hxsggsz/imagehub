@@ -11,6 +11,7 @@ import { imageDefault } from '@/utils/imageDefault'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 dayjs.extend(relativeTime)
 
@@ -45,8 +46,6 @@ export const Folders = () => {
   /**
    * todo:
    * make this component more clean and separete the logic on custom hooks
-   * investigate why the folders dont show if there is less than two
-   * add skeleton when the folders are loading
    */
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
@@ -64,6 +63,7 @@ export const Folders = () => {
         createFolder.mutate({
           name: fileName,
           backgroundImage: file.fileUrl,
+          backgroundImageKey: file.fileKey,
         })
       })
     },
@@ -83,6 +83,7 @@ export const Folders = () => {
           backgroundImage: imageDefault(random),
         }),
     )
+    setImageToUpload([])
   }
 
   return (
@@ -114,6 +115,9 @@ export const Folders = () => {
               <Form.Error>
                 {createFolder.error.data.zodError.fieldErrors.name}
               </Form.Error>
+            )}
+            {createFolder.error?.message && (
+              <Form.Error>{createFolder.error.message}</Form.Error>
             )}
             <Form.Submit
               IsLoading={createFolder.isLoading || isUploading}
@@ -159,7 +163,26 @@ export const Folders = () => {
                 </Card.Root>
               ))
             ) : (
-              <h1>nothing</h1>
+              <div className="grid h-full place-items-center text-cyan-50">
+                <h1 className="text-4xl font-bold">Thereaposs no folder yet</h1>
+                <Image
+                  quality={100}
+                  width={500}
+                  height={500}
+                  src="/empty.png"
+                  alt="woman holding a big empty folder"
+                  className="w-full"
+                />
+                <h2 className="text-3xl font-semibold">
+                  Create your first folder{' '}
+                  <Link
+                    className="underline hover:text-cyan-50/4'0"
+                    href={{ pathname: '/', query: { new: 'open' } }}
+                  >
+                    Here
+                  </Link>
+                </h2>
+              </div>
             )}
           </AnimatePresence>
         </>

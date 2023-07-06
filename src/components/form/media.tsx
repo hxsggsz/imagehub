@@ -6,7 +6,7 @@ interface MediaProps {
 
 export const Media = ({ children }: MediaProps) => {
   return (
-    <label className="flex w-full cursor-pointer items-center justify-start gap-4 text-cyan-100">
+    <label className="flex w-full cursor-pointer items-center justify-start gap-4 text-cyan-50">
       {children}
     </label>
   )

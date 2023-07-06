@@ -5,7 +5,7 @@ export const Back = () => {
   return (
     <Link
       href="/"
-      className="flex w-full items-center justify-start gap-4 pl-4 pt-4 text-cyan-100"
+      className="flex w-full items-center justify-start gap-4 pl-4 pt-4 text-cyan-50"
     >
       <ArrowLeft size={18} weight="bold" />
     </Link>
