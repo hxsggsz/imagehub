@@ -31,6 +31,7 @@ export const folderRouter = createTRPCRouter({
           .min(3, 'name is too short')
           .max(30, 'name is too long'),
         backgroundImage: z.string().url(),
+        backgroundImageKey: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -39,6 +40,7 @@ export const folderRouter = createTRPCRouter({
           name: input.name,
           userId: ctx.session.user.id,
           backgroundImage: input.backgroundImage,
+          backgroundImageKey: input.backgroundImageKey,
         },
       })
     }),

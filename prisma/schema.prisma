@@ -16,18 +16,20 @@ datasource db {
 }
 
 model Folders {
-    id              String   @id @default(cuid())
-    createdAt       DateTime @default(now())
-    name            String   @unique
-    user            User     @relation(fields: [userId], references: [id])
-    backgroundImage String
-    images          Images[]
-    userId          String
+    id                 String   @id @default(cuid())
+    createdAt          DateTime @default(now())
+    name               String   @unique
+    user               User     @relation(fields: [userId], references: [id])
+    backgroundImage    String   @unique
+    backgroundImageKey String   @unique
+    images             Images[]
+    userId             String
 }
 
 model Images {
     id        String   @id @default(cuid())
     image     String
+    name      String
     createdAt DateTime @default(now())
     Folders   Folders? @relation(fields: [foldersId], references: [id])
     foldersId String?
