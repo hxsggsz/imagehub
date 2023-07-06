@@ -77,7 +77,7 @@ export const Folders = () => {
     const random = Math.floor(Math.random() * 6 + 1)
     await startUpload(imageToUpload).then(
       (res) =>
-        res?.length === 0 &&
+        res?.length === 0 && // if the res is empty create new folder with image placeholder
         createFolder.mutate({
           name: fileName,
           backgroundImage: imageDefault(random),
@@ -111,13 +111,11 @@ export const Folders = () => {
               Add media (optional)
             </Form.Media>
             <Form.Preview image={files} />
-            {createFolder.error?.data?.zodError?.fieldErrors?.name && (
+            {createFolder.error && (
               <Form.Error>
-                {createFolder.error.data.zodError.fieldErrors.name}
+                {createFolder.error?.data?.zodError?.fieldErrors.name ||
+                  createFolder.error.message}
               </Form.Error>
-            )}
-            {createFolder.error?.message && (
-              <Form.Error>{createFolder.error.message}</Form.Error>
             )}
             <Form.Submit
               IsLoading={createFolder.isLoading || isUploading}
@@ -164,7 +162,9 @@ export const Folders = () => {
               ))
             ) : (
               <div className="grid h-full place-items-center text-cyan-50">
-                <h1 className="text-4xl font-bold">Thereaposs no folder yet</h1>
+                <h1 className="text-4xl font-bold">
+                  There&apos;s no folder yet
+                </h1>
                 <Image
                   quality={100}
                   width={500}
@@ -176,7 +176,7 @@ export const Folders = () => {
                 <h2 className="text-3xl font-semibold">
                   Create your first folder{' '}
                   <Link
-                    className="underline hover:text-cyan-50/4'0"
+                    className="underline hover:text-cyan-50/40"
                     href={{ pathname: '/', query: { new: 'open' } }}
                   >
                     Here

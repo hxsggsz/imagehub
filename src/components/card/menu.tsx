@@ -1,5 +1,5 @@
-import { DotsThreeVertical } from "@phosphor-icons/react";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { DotsThreeVertical } from '@phosphor-icons/react'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 interface MenuProps {
   id: string
@@ -26,14 +26,18 @@ export const Menu = ({ id, items }: MenuProps) => {
           sideOffset={5}
         >
           {items.map((item, idx) => (
-            <DropdownMenu.Item onClick={() => item.onSelect(id)} key={idx} className="group relative flex h-[25px] cursor-pointer select-none items-center rounded-[3px] px-[5px] pl-[25px] text-[13px] leading-none outline-none hover:bg-slate-500 hover:text-slate-100">
-            {item.label}
-          </DropdownMenu.Item>
+            <DropdownMenu.Item
+              onClick={() => item.onSelect(id)}
+              key={idx}
+              className="group relative flex h-[25px] cursor-pointer select-none items-center rounded-[3px] px-[5px] pl-[25px] text-[13px] leading-none outline-none hover:bg-slate-500 hover:text-slate-100"
+            >
+              {item.label}
+            </DropdownMenu.Item>
           ))}
-          
+
           <DropdownMenu.Arrow className="fill-white" />
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
-  );
-};
+  )
+}

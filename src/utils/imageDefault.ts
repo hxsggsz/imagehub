@@ -11,7 +11,7 @@ export function imageDefault(number: number): string {
       return 'https://i.pinimg.com/564x/74/e1/70/74e170b0ba6330ec7ad0c9e688ba17d1.jpg'
       break
     case 4:
-      return 'https://i.pinimg.com/564x/44/18/13/4418134256e0b559e5f56f3c8afdb29f.jpg'
+      return 'https://i.pinimg.com/564x/2e/8b/01/2e8b013bd630c641a88951f8182e27a6.jpg'
       break
     case 5:
       return 'https://i.pinimg.com/564x/cf/23/50/cf2350c395bcc2a7efc360ff180592ef.jpg'
