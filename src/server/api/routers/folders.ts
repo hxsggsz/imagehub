@@ -63,6 +63,40 @@ export const folderRouter = createTRPCRouter({
       })
     }),
 
+  updateFolderName: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid(),
+        name: z
+          .string()
+          .min(3, 'name is too short')
+          .max(30, 'name is too long'),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const getFolder = await ctx.prisma.folders.findUnique({
+        where: {
+          id: input.id,
+        },
+      })
+
+      if (!getFolder) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'this folder does&apos;t exist',
+        })
+      }
+
+      return await ctx.prisma.folders.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+        },
+      })
+    }),
+
   deleteFolder: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {

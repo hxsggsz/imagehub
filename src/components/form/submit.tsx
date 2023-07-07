@@ -8,7 +8,7 @@ interface SubmitProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Submit = ({ children, IsLoading, ...props }: SubmitProps) => {
   return (
-    <Button {...props} isLoading={IsLoading} className="w-full">
+    <Button {...props} type="submit" isLoading={IsLoading} className="w-full">
       {children}
     </Button>
   )

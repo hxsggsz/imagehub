@@ -35,11 +35,23 @@ export const Folders = () => {
       void router.replace({ pathname: '/', query: { folders: 'open' } })
     },
   })
+  const updateFolderName = api.folders.updateFolderName.useMutation({
+    onSuccess: () => {
+      void ctx.folders.getAll.invalidate()
+      void router.replace({ pathname: '/', query: { folders: 'open' } })
+    },
+  })
 
   const menu = [
     {
       label: 'Delete folder',
+      isDelete: true,
       onSelect: (id: string) => deleteFolder.mutate({ id }),
+    },
+    {
+      label: 'Edit name',
+      onSelect: (id: string) =>
+        router.replace({ pathname: '/', query: { folders: id } }),
     },
   ]
 
@@ -84,6 +96,18 @@ export const Folders = () => {
         }),
     )
     setImageToUpload([])
+  }
+
+  function handleFolderName(id: string, ev: FormEvent<HTMLFormElement>) {
+    ev.preventDefault()
+    const formData = new FormData(ev.currentTarget)
+    const name = formData.get('updateFolderName')
+    if (name) {
+      updateFolderName.mutate({
+        id,
+        name: name.toString(),
+      })
+    }
   }
 
   return (
@@ -153,7 +177,9 @@ export const Folders = () => {
                 <Card.Root key={folder.id}>
                   <Card.Image image={folder.backgroundImage} />
                   <Card.Content
+                    id={folder.id}
                     title={folder.name}
+                    handleSubmit={handleFolderName}
                     date={dayjs(folder.createdAt).fromNow()}
                   >
                     <Card.Menu id={folder.id} items={menu} />

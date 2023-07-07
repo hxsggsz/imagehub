@@ -4,7 +4,6 @@
 
 @layer base {
   body {
-    @apply text-slate-900;
-    @apply bg-slate-200;
+    @apply text-slate-900 overflow-hidden bg-slate-200;
   }
 }
