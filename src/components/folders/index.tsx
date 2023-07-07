@@ -6,54 +6,27 @@ import { Button } from '../button'
 import Link from 'next/link'
 import { useUploadThing } from '@/utils/uploadthing'
 import { type ChangeEvent, type FormEvent, useState } from 'react'
-import { api } from '@/utils/api'
 import { imageDefault } from '@/utils/imageDefault'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import { useFolders } from '@/hooks/useFolders'
 
 dayjs.extend(relativeTime)
 
 export const Folders = () => {
   const router = useRouter()
+  const { states, handlers } = useFolders()
 
-  const [files, setFiles] = useState('')
   const [folderList, setFolderList] = useState<string[]>([])
-  const [fileName, setFileName] = useState('')
   const [imageToUpload, setImageToUpload] = useState<File[]>([])
-
-  const allFolders = api.folders.getAll.useQuery()
-  const ctx = api.useContext()
-  const deleteFolder = api.folders.deleteFolder.useMutation({
-    onSuccess: () => ctx.folders.getAll.invalidate(),
-  })
-
-  const deleteManyFolders = api.folders.deleteManyFolders.useMutation({
-    onSuccess: () => ctx.folders.getAll.invalidate(),
-  })
-
-  const createFolder = api.folders.createFolder.useMutation({
-    onSuccess: () => {
-      setFiles('')
-      setFileName('')
-      void ctx.folders.getAll.invalidate()
-      void router.replace({ pathname: '/', query: { folders: 'open' } })
-    },
-  })
-
-  const updateFolderName = api.folders.updateFolderName.useMutation({
-    onSuccess: () => {
-      void ctx.folders.getAll.invalidate()
-      void router.replace({ pathname: '/', query: { folders: 'open' } })
-    },
-  })
 
   const menu = [
     {
       label: 'Delete folder',
       isDelete: true,
-      onSelect: (id: string) => deleteFolder.mutate({ id }),
+      onSelect: (id: string) => handlers.deleteFolder.mutate({ id }),
     },
     {
       label: 'Edit name',
@@ -65,6 +38,8 @@ export const Folders = () => {
   /**
    * todo:
    * make this component more clean and separete the logic on custom hooks
+   * separete the image logic in a custom hook
+   * add toast notification for delete one or many folders and when create a new folder
    */
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
@@ -72,15 +47,14 @@ export const Folders = () => {
     if (!files) return
     setImageToUpload(Array.from(files))
     const preview = URL.createObjectURL(files[0]!)
-    setFiles(preview)
+    states.setFiles(preview)
   }
 
   const { startUpload, isUploading } = useUploadThing('imageUploader', {
-    onClientUploadComplete: (file) => {
-      // eslint-disable-next-line array-callback-return
-      file?.map((file) => {
-        createFolder.mutate({
-          name: fileName,
+    onClientUploadComplete: (files) => {
+      files?.forEach((file) => {
+        handlers.createFolder.mutate({
+          name: states.fileName,
           backgroundImage: file.fileUrl,
           backgroundImageKey: file.fileKey,
         })
@@ -97,8 +71,8 @@ export const Folders = () => {
     await startUpload(imageToUpload).then(
       (res) =>
         res?.length === 0 && // if the res is empty create new folder with image placeholder
-        createFolder.mutate({
-          name: fileName,
+        handlers.createFolder.mutate({
+          name: states.fileName,
           backgroundImage: imageDefault(random),
         }),
     )
@@ -110,7 +84,7 @@ export const Folders = () => {
     const formData = new FormData(ev.currentTarget)
     const name = formData.get('updateFolderName')
     if (name) {
-      updateFolderName.mutate({
+      handlers.updateFolderName.mutate({
         id,
         name: name.toString(),
       })
@@ -125,9 +99,9 @@ export const Folders = () => {
           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <Form.Root onSubmit={handleSubmit}>
             <Form.Input
-              value={fileName}
+              value={states.fileName}
               placeholder="Folder's name"
-              onChange={(ev) => setFileName(ev.currentTarget.value)}
+              onChange={(ev) => states.setFileName(ev.currentTarget.value)}
             />
             <Form.Media>
               <input
@@ -141,16 +115,16 @@ export const Folders = () => {
               <CameraPlus size={28} weight="bold" />
               Add media (optional)
             </Form.Media>
-            <Form.Preview image={files} />
-            {createFolder.error && (
+            <Form.Preview image={states.files} />
+            {handlers.createFolder.error && (
               <Form.Error>
-                {createFolder.error?.data?.zodError?.fieldErrors.name ||
-                  createFolder.error.message}
+                {handlers.createFolder.error?.data?.zodError?.fieldErrors
+                  .name || handlers.createFolder.error.message}
               </Form.Error>
             )}
             <Form.Submit
-              IsLoading={createFolder.isLoading || isUploading}
-              disabled={createFolder.isLoading || isUploading}
+              IsLoading={handlers.createFolder.isLoading || isUploading}
+              disabled={handlers.createFolder.isLoading || isUploading}
             >
               teste
             </Form.Submit>
@@ -175,7 +149,7 @@ export const Folders = () => {
             </Button>
             <Button
               onClick={() =>
-                deleteManyFolders.mutate({
+                handlers.deleteManyFolders.mutate({
                   id: folderList,
                 })
               }
@@ -186,15 +160,16 @@ export const Folders = () => {
           </div>
 
           <AnimatePresence>
-            {allFolders.isLoading ? (
+            {handlers.allFolders.isLoading ? (
               <>
                 <Card.Skeleton />
                 <Card.Skeleton />
                 <Card.Skeleton />
                 <Card.Skeleton />
               </>
-            ) : allFolders.data && allFolders.data.length > 0 ? (
-              allFolders.data.map((folder) => (
+            ) : handlers.allFolders.data &&
+              handlers.allFolders.data.length > 0 ? (
+              handlers.allFolders.data.map((folder) => (
                 <Card.Root
                   key={folder.id}
                   id={folder.id}

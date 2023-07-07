@@ -28,9 +28,12 @@ export const Menu = ({ id, items }: MenuProps) => {
         >
           {items.map((item, idx) => (
             <DropdownMenu.Item
-              onClick={() => item.onSelect(id)}
+              onClick={(ev) => {
+                ev.stopPropagation()
+                item.onSelect(id)
+              }}
               key={idx}
-              className={`group relative flex h-[25px] cursor-pointer select-none items-center rounded-[3px] px-[5px] pl-[25px] text-[13px] ${
+              className={`group relative z-50 flex h-[25px] cursor-pointer select-none items-center rounded-[3px] px-[5px] pl-[25px] text-[13px] ${
                 item.isDelete ? 'text-red-700' : ''
               } leading-none outline-none hover:bg-slate-500 ${
                 item.isDelete ? 'hover:text-red-600' : 'hover:text-slate-100'
