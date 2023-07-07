@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { Card } from '../card'
-import { CameraPlus, FolderNotchPlus, X } from '@phosphor-icons/react'
+import { CameraPlus, FolderNotchPlus, Trash, X } from '@phosphor-icons/react'
 import { Form } from '../form'
 import { Button } from '../button'
 import Link from 'next/link'
@@ -19,6 +19,7 @@ export const Folders = () => {
   const router = useRouter()
 
   const [files, setFiles] = useState('')
+  const [folderList, setFolderList] = useState<string[]>([])
   const [fileName, setFileName] = useState('')
   const [imageToUpload, setImageToUpload] = useState<File[]>([])
 
@@ -27,6 +28,11 @@ export const Folders = () => {
   const deleteFolder = api.folders.deleteFolder.useMutation({
     onSuccess: () => ctx.folders.getAll.invalidate(),
   })
+
+  const deleteManyFolders = api.folders.deleteManyFolders.useMutation({
+    onSuccess: () => ctx.folders.getAll.invalidate(),
+  })
+
   const createFolder = api.folders.createFolder.useMutation({
     onSuccess: () => {
       setFiles('')
@@ -35,6 +41,7 @@ export const Folders = () => {
       void router.replace({ pathname: '/', query: { folders: 'open' } })
     },
   })
+
   const updateFolderName = api.folders.updateFolderName.useMutation({
     onSuccess: () => {
       void ctx.folders.getAll.invalidate()
@@ -151,16 +158,30 @@ export const Folders = () => {
         </>
       ) : (
         <>
-          <div className="mb-20 flex w-full items-center gap-4 px-4 md:hidden">
-            <Button asChild>
+          <div
+            className={`mb-20 flex w-full items-center gap-4 px-4 ${
+              folderList.length === 0 ? 'hidden' : ''
+            }`}
+          >
+            <Button className="w-full" asChild>
               <Link href="/">
                 <X size={30} weight="bold" />
               </Link>
             </Button>
-            <Button asChild>
+            <Button className="w-full" asChild>
               <Link href={{ pathname: '/', query: { new: 'open' } }}>
-                <FolderNotchPlus size={30} weight="bold" />
+                <FolderNotchPlus size={30} weight="fill" />
               </Link>
+            </Button>
+            <Button
+              onClick={() =>
+                deleteManyFolders.mutate({
+                  id: folderList,
+                })
+              }
+              className="w-full"
+            >
+              <Trash size={30} weight="fill" />
             </Button>
           </div>
 
@@ -174,7 +195,12 @@ export const Folders = () => {
               </>
             ) : allFolders.data && allFolders.data.length > 0 ? (
               allFolders.data.map((folder) => (
-                <Card.Root key={folder.id}>
+                <Card.Root
+                  key={folder.id}
+                  id={folder.id}
+                  folderList={folderList}
+                  setFolderList={setFolderList}
+                >
                   <Card.Image image={folder.backgroundImage} />
                   <Card.Content
                     id={folder.id}
@@ -192,12 +218,11 @@ export const Folders = () => {
                   There&apos;s no folder yet
                 </h1>
                 <Image
-                  quality={100}
                   width={500}
-                  height={500}
+                  height={300}
+                  quality={100}
                   src="/empty.png"
                   alt="woman holding a big empty folder"
-                  className="w-full"
                 />
                 <h2 className="text-3xl font-semibold">
                   Create your first folder{' '}

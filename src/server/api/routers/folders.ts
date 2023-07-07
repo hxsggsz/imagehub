@@ -117,4 +117,30 @@ export const folderRouter = createTRPCRouter({
         },
       })
     }),
+
+  deleteManyFolders: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid().array(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const folderImage = await ctx.prisma.folders.findMany({
+        where: {
+          id: { in: input.id },
+        },
+      })
+
+      for (const folder of folderImage) {
+        if (folder.backgroundImageKey) {
+          await utapi.deleteFiles(folder.backgroundImageKey)
+        }
+      }
+
+      return await ctx.prisma.folders.deleteMany({
+        where: {
+          id: { in: input.id },
+        },
+      })
+    }),
 })
