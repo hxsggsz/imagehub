@@ -17,7 +17,7 @@ export function useLongPress(
     timerRef.current = setTimeout(() => {
       isLongPress.current = true
       setEvent('longpress')
-    }, 500)
+    }, 250)
   }
 
   // if click the user is redirect, if is long press, update folder list

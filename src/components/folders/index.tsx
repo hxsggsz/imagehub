@@ -37,9 +37,9 @@ export const Folders = () => {
 
   /**
    * todo:
-   * make this component more clean and separete the logic on custom hooks
-   * separete the image logic in a custom hook
    * add toast notification for delete one or many folders and when create a new folder
+   * animate the div for a new folder or deleting one
+   * add the total folders selected on delete button and add cancel butto
    */
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
