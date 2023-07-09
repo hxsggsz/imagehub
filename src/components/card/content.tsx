@@ -25,23 +25,25 @@ export const Content = ({
     <div className="w-full p-4">
       <section className="flex items-center justify-between rounded-ss-xl text-slate-700">
         {folders === id ? (
-          <Form.Root
-            className="flex flex-row"
-            onSubmit={(ev) => handleSubmit(id, ev)}
-          >
-            <Link href={{ pathname: '/', query: { folders: 'open' } }}>
-              <CaretLeft size={30} weight="bold" />
-            </Link>
-            <Form.Input
-              autoFocus
-              placeholder={title}
-              name="updateFolderName"
-              className="text-cyan-950"
-            />
-            <button type="submit">
-              <PaperPlaneRight size={30} weight="bold" />
-            </button>
-          </Form.Root>
+          <div className="w-full" onClick={(ev) => ev.stopPropagation()}>
+            <Form.Root
+              className="flex flex-row"
+              onSubmit={(ev) => handleSubmit(id, ev)}
+            >
+              <Link href={{ pathname: '/', query: { folders: 'open' } }}>
+                <CaretLeft size={30} weight="bold" />
+              </Link>
+              <Form.Input
+                autoFocus
+                placeholder={title}
+                name="updateFolderName"
+                className="text-cyan-950"
+              />
+              <button type="submit">
+                <PaperPlaneRight size={30} weight="bold" />
+              </button>
+            </Form.Root>
+          </div>
         ) : (
           <h1 className="text-2xl font-bold">{title}</h1>
         )}
