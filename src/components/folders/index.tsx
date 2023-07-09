@@ -9,7 +9,7 @@ import { type ChangeEvent, type FormEvent, useState } from 'react'
 import { imageDefault } from '@/utils/imageDefault'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import { useFolders } from '@/hooks/useFolders'
 
@@ -34,13 +34,6 @@ export const Folders = () => {
         router.replace({ pathname: '/', query: { folders: id } }),
     },
   ]
-
-  /**
-   * todo:
-   * add toast notification for delete one or many folders and when create a new folder
-   * animate the div for a new folder or deleting one
-   * add the total folders selected on delete button and add cancel butto
-   */
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
     const { files } = ev.target
@@ -91,8 +84,12 @@ export const Folders = () => {
     }
   }
 
+  function resetFolderList() {
+    setFolderList([])
+  }
+
   return (
-    <div className="flex h-screen w-full  flex-col items-center gap-8 overflow-y-auto bg-cyan-900 py-4 scrollbar scrollbar-track-inherit scrollbar-thumb-cyan-100 scrollbar-thumb-rounded-lg scrollbar-w-2 max-lg:px-6 max-md:absolute max-md:inset-0 max-md:z-20">
+    <ul className="flex h-full w-full flex-col items-center gap-8 overflow-y-auto bg-cyan-900 py-4 scrollbar scrollbar-track-inherit scrollbar-thumb-cyan-100 scrollbar-thumb-rounded-lg scrollbar-w-2 max-lg:px-6 max-md:absolute max-md:inset-0 max-md:z-20">
       {router.query.new ? (
         <>
           <Form.Back />
@@ -116,15 +113,18 @@ export const Folders = () => {
               Add media (optional)
             </Form.Media>
             <Form.Preview image={states.files} />
-            {handlers.createFolder.error && (
+            {handlers.createFolder.error?.data?.zodError?.fieldErrors.name && (
               <Form.Error>
-                {handlers.createFolder.error?.data?.zodError?.fieldErrors
-                  .name || handlers.createFolder.error.message}
+                {handlers.createFolder.error.data.zodError.fieldErrors.name}
               </Form.Error>
             )}
             <Form.Submit
               IsLoading={handlers.createFolder.isLoading || isUploading}
-              disabled={handlers.createFolder.isLoading || isUploading}
+              disabled={
+                handlers.createFolder.isLoading ||
+                isUploading ||
+                states.fileName === ''
+              }
             >
               teste
             </Form.Submit>
@@ -132,32 +132,43 @@ export const Folders = () => {
         </>
       ) : (
         <>
-          <div
-            className={`mb-20 flex w-full items-center gap-4 px-4 ${
-              folderList.length === 0 ? 'hidden' : ''
-            }`}
-          >
-            <Button className="w-full" asChild>
-              <Link href="/">
-                <X size={30} weight="bold" />
-              </Link>
-            </Button>
-            <Button className="w-full" asChild>
-              <Link href={{ pathname: '/', query: { new: 'open' } }}>
-                <FolderNotchPlus size={30} weight="fill" />
-              </Link>
-            </Button>
-            <Button
-              onClick={() =>
-                handlers.deleteManyFolders.mutate({
-                  id: folderList,
-                })
-              }
-              className="w-full"
-            >
-              <Trash size={30} weight="fill" />
-            </Button>
-          </div>
+          <AnimatePresence>
+            {folderList.length > 0 && (
+              <motion.div
+                initial={{ y: -100 }}
+                animate={{ y: 0 }}
+                exit={{ y: -100 }}
+                className="mb-20 flex w-full items-center gap-4 px-4"
+              >
+                <Button asChild className="w-full" onClick={resetFolderList}>
+                  <Link href="/">
+                    <X size={30} weight="bold" />
+                  </Link>
+                </Button>
+                <Button className="w-full" asChild>
+                  <Link href={{ pathname: '/', query: { new: 'open' } }}>
+                    <FolderNotchPlus size={30} weight="fill" />
+                  </Link>
+                </Button>
+                <Button
+                  onClick={() => {
+                    resetFolderList()
+                    handlers.deleteManyFolders.mutate({
+                      id: folderList,
+                    })
+                  }}
+                  className="w-full"
+                >
+                  <div className="relative px-3">
+                    <Trash size={30} weight="fill" />
+                    <span className="absolute -top-1 right-0 h-6 w-6 rounded-full bg-cyan-900 text-base">
+                      {folderList.length}
+                    </span>
+                  </div>
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <AnimatePresence>
             {handlers.allFolders.isLoading ? (
@@ -170,22 +181,26 @@ export const Folders = () => {
             ) : handlers.allFolders.data &&
               handlers.allFolders.data.length > 0 ? (
               handlers.allFolders.data.map((folder) => (
-                <Card.Root
+                <li
+                  className="flex w-full flex-col items-center"
                   key={folder.id}
-                  id={folder.id}
-                  folderList={folderList}
-                  setFolderList={setFolderList}
                 >
-                  <Card.Image image={folder.backgroundImage} />
-                  <Card.Content
+                  <Card.Root
                     id={folder.id}
-                    title={folder.name}
-                    handleSubmit={handleFolderName}
-                    date={dayjs(folder.createdAt).fromNow()}
+                    folderList={folderList}
+                    setFolderList={setFolderList}
                   >
-                    <Card.Menu id={folder.id} items={menu} />
-                  </Card.Content>
-                </Card.Root>
+                    <Card.Image image={folder.backgroundImage} />
+                    <Card.Content
+                      id={folder.id}
+                      title={folder.name}
+                      handleSubmit={handleFolderName}
+                      date={dayjs(folder.createdAt).fromNow()}
+                    >
+                      <Card.Menu id={folder.id} items={menu} />
+                    </Card.Content>
+                  </Card.Root>
+                </li>
               ))
             ) : (
               <div className="grid h-full place-items-center text-cyan-50">
@@ -213,6 +228,6 @@ export const Folders = () => {
           </AnimatePresence>
         </>
       )}
-    </div>
+    </ul>
   )
 }

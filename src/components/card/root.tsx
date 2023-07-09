@@ -22,11 +22,12 @@ export const Root = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      layoutId={id}
+      initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: findThisFolder ? 0.9 : 1 }}
-      exit={{ opacity: 0 }}
+      exit={{ opacity: 0, scale: 0 }}
       {...handlers}
-      className="relative z-10 max-w-lg cursor-pointer rounded-xl border-2 border-b-8 border-r-8 border-cyan-100 bg-cyan-100 transition-all hover:border-cyan-700 active:border-b-4 active:border-r-4"
+      className="z-10 max-w-lg cursor-pointer rounded-xl border-2 border-b-8 border-r-8 border-cyan-100 bg-cyan-100 transition-all hover:border-cyan-700 active:border-b-4 active:border-r-4"
     >
       {findThisFolder && (
         <CheckCircle

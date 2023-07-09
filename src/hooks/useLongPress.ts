@@ -22,19 +22,25 @@ export function useLongPress(
 
   // if click the user is redirect, if is long press, update folder list
   function handleOnClick() {
-    if (isLongPress.current) {
-      // todo: remove the user if long pres when id is in the list
-      const findFolderId = folderList.find((folderId) => folderId === id)
+    const findFolderId = folderList.find((folderId) => folderId === id)
+    const deleteThisFolderFromList = folderList.filter(
+      (folderId) => folderId !== id,
+    )
+
+    if (folderList.length > 0) {
       if (findFolderId) {
-        const deleteThisFolderFromList = folderList.filter(
-          (folderId) => folderId !== id,
-        )
         setFolderList(deleteThisFolderFromList)
         return
       }
       setFolderList((prev) => [...prev, id])
       return
     }
+
+    if (isLongPress.current) {
+      setFolderList((prev) => [...prev, id])
+      return
+    }
+
     void router.replace({ pathname: '/', query: { new: 'open' } })
     setEvent('click')
   }
