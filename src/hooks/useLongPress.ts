@@ -41,7 +41,7 @@ export function useLongPress(
       return
     }
 
-    void router.replace({ pathname: '/', query: { new: 'open' } })
+    void router.replace(`/folder/${id}`)
     setEvent('click')
   }
 
