@@ -18,7 +18,7 @@ export const Header = () => {
           </Avatar.Root>
 
           <div className="">
-            <p className="text-slate-900/60">
+            <p>
               Hi,{' '}
               <span className="font-medium text-cyan-700">
                 {session.user.name}

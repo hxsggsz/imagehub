@@ -2,6 +2,7 @@ import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { twMerge } from 'tailwind-merge'
 import { Loading } from '../loading.tsx/loading'
+import { motion } from 'framer-motion'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
@@ -18,7 +19,7 @@ export const Button = ({
   const Comp = asChild ? Slot : 'button'
 
   return (
-    <div className="relative w-full">
+    <motion.div layout className="relative w-full">
       <Comp
         {...props}
         className={twMerge(
@@ -28,6 +29,6 @@ export const Button = ({
       >
         {isLoading ? <Loading /> : children}
       </Comp>
-    </div>
+    </motion.div>
   )
 }

@@ -4,6 +4,6 @@
 
 @layer base {
   body {
-    @apply text-slate-900 overflow-hidden bg-slate-200;
+    @apply text-slate-900 overflow-hidden bg-slate-200 dark:bg-neutral-800 dark:text-slate-200;
   }
 }

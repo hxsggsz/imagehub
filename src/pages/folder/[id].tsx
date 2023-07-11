@@ -2,32 +2,23 @@ import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { File } from '../../components/files/index'
+
 export default function Folder() {
   const router = useRouter()
   const { id } = router.query
 
   const [isClicked, setIsClicked] = useState(false)
+  const [isDbClicked, setIsDbClicked] = useState(false)
 
   return (
     <main className="grid h-screen place-items-center">
       {/* image list */}
-      <div
-        onClick={() => setIsClicked((prev) => !prev)}
-        className={`grid cursor-pointer place-items-center rounded-md p-2 ${
-          isClicked ? 'bg-cyan-900' : 'bg-transparent'
-        }`}
-      >
-        <Image
-          width={130}
-          height={100}
-          alt="image"
-          src="/background-default1.jpg"
-          className="rounded-md border-2 border-b-4 border-cyan-700"
-        />
-        <h1 className={`text-xl font-bold ${isClicked ? 'text-cyan-100' : ''}`}>
-          name
-        </h1>
-      </div>
+      <File.Root>
+        <File.Image image="/background-default1.jpg" />
+        <File.Title title="name" />
+      </File.Root>
     </main>
     // carousel image dbclick
     // <div

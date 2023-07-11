@@ -34,7 +34,7 @@ export const Menu = ({ id, items }: MenuProps) => {
               }}
               key={idx}
               className={`group relative z-50 flex h-[25px] cursor-pointer select-none items-center rounded-[3px] px-[5px] pl-[25px] text-[13px] ${
-                item.isDelete ? 'text-red-700' : ''
+                item.isDelete ? 'text-red-700' : 'text-slate-900'
               } leading-none outline-none hover:bg-slate-500 ${
                 item.isDelete ? 'hover:text-red-600' : 'hover:text-slate-100'
               }`}

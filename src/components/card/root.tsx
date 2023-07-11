@@ -22,7 +22,7 @@ export const Root = ({
 
   return (
     <motion.div
-      layoutId={id}
+      layout
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: findThisFolder ? 0.9 : 1 }}
       exit={{ opacity: 0, scale: 0 }}
