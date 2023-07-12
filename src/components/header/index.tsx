@@ -35,9 +35,9 @@ export const Header = () => {
       ) : (
         <div
           onClick={() => void signIn('github')}
-          className="flex cursor-pointer items-center gap-2 text-slate-900/60 underline hover:text-slate-900/40"
+          className="flex  cursor-pointer items-center gap-2 underline hover:opacity-40"
         >
-          <div className="h-12 w-12 rounded-full bg-slate-700/10" />
+          <div className="h-12 w-12 animate-pulse rounded-full" />
           <p>Login with Github!</p>
         </div>
       )}

@@ -136,7 +136,7 @@ export const Folders = () => {
         <>
           <AnimatePresence>
             {handlers.allFolders.isLoading ? (
-              <div className="w-full max-lg:px-6">
+              <div className="grid w-full place-items-center max-lg:px-6">
                 <Card.Skeleton />
                 <Card.Skeleton />
                 <Card.Skeleton />
