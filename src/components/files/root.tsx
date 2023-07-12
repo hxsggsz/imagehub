@@ -1,21 +1,17 @@
-import { useState, type ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { type ReactNode, type Dispatch, type SetStateAction } from 'react'
 
 interface RootProps {
   children: ReactNode
+  setIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export const Root = ({ children }: RootProps) => {
-  const [isClicked, setIsClicked] = useState(false)
-
+export const Root = ({ children, setIsOpen }: RootProps) => {
   return (
-    <motion.div
-      animate={{ scale: isClicked ? [0.9, 1] : 1 }}
-      transition={{ duration: 0.3 }}
-      onClick={() => setIsClicked((prev) => !prev)}
+    <div
+      onClick={() => setIsOpen((prev) => !prev)}
       className="grid cursor-pointer place-items-center rounded-md p-2"
     >
       {children}
-    </motion.div>
+    </div>
   )
 }
