@@ -29,6 +29,7 @@ model Folders {
 model Images {
     id        String   @id @default(cuid())
     image     String
+    imageKey  String
     name      String
     createdAt DateTime @default(now())
     Folders   Folders? @relation(fields: [foldersId], references: [id])
