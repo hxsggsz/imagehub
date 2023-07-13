@@ -8,6 +8,7 @@ import * as Modal from '@radix-ui/react-dialog'
 import { useUploadThing } from '@/utils/uploadthing'
 import toast from 'react-hot-toast'
 import { api } from '@/utils/api'
+import { Button } from '@/components/button'
 
 export default function Folder() {
   const router = useRouter()
@@ -61,15 +62,36 @@ export default function Folder() {
 
   return (
     <>
+      <div className="mt-20 flex w-40 flex-col gap-4 px-4">
+        <Button className="w-full">
+          <label>
+            Add file
+            <input
+              id="mediaPicker"
+              name="mediaPicker"
+              accept="image/*"
+              type="file"
+              className="hidden"
+              onChange={handleImage}
+            />
+          </label>
+        </Button>
+        <Button className="w-full">
+          <label>
+            Add file
+            <input
+              id="mediaPicker"
+              name="mediaPicker"
+              accept="image/*"
+              type="file"
+              className="hidden"
+              onChange={handleImage}
+            />
+          </label>
+        </Button>
+      </div>
+
       <main className="grid h-screen place-items-center">
-        {/* image list */}
-        <input
-          id="mediaPicker"
-          name="mediaPicker"
-          accept="image/*"
-          type="file"
-          onChange={handleImage}
-        />
         {allFiles.data?.map((file) => (
           <>
             <File.Root key={file.id} setIsOpen={setIsOpen}>

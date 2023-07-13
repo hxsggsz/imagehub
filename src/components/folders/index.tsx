@@ -149,7 +149,7 @@ export const Folders = () => {
                   initial={{ y: -100 }}
                   animate={{ y: 0 }}
                   exit={{ y: -100 }}
-                  className="top-0 mb-20 flex w-full items-center gap-4 px-4"
+                  className="mb-20 flex w-full items-center gap-4 px-4"
                 >
                   <Button asChild className="w-full" onClick={resetFolderList}>
                     <Link href="/">
