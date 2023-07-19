@@ -7,9 +7,9 @@ import { File } from '../../components/files/index'
 import * as Modal from '@radix-ui/react-dialog'
 import { useUploadThing } from '@/utils/uploadthing'
 import toast from 'react-hot-toast'
-import { api } from '@/utils/api'
 import { Button } from '@/components/button'
 import { Loading } from '@/components/loading.tsx/loading'
+import { useFiles } from '@/hooks/useFiles'
 
 export default function Folder() {
   const router = useRouter()
@@ -21,19 +21,7 @@ export default function Folder() {
   const [imageModal, setImageModal] = useState('')
   const [fileId, setFileId] = useState<string[]>([])
 
-  const ctx = api.useContext()
-  const allFiles = api.files.getAll.useQuery({ id: folderId! })
-  const createFile = api.files.newFile.useMutation({
-    onError: (err) => {
-      if (err?.shape?.message) {
-        toast.error(err.shape.message)
-      }
-    },
-    onSuccess: () => {
-      toast.success('image added successfully')
-      void ctx.files.getAll.invalidate()
-    },
-  })
+  const { handlers } = useFiles(folderId)
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
     const { files } = ev.target
@@ -47,7 +35,7 @@ export default function Folder() {
         const fileName = file.fileUrl.match('_([^_]+)$')
 
         if (fileName && id && fileName[1]) {
-          createFile.mutate({
+          handlers.createFile.mutate({
             FoldersId: id.toString(),
             name: fileName[1],
             image: file.fileUrl,
@@ -61,11 +49,43 @@ export default function Folder() {
     },
   })
 
+  async function handleCopyImage(image: string) {
+    try {
+      await navigator.clipboard.writeText(image)
+      toast.success('image copy with success')
+    } catch (error) {
+      toast.error('error on copying the image')
+    }
+  }
+
+  function handleOpenImage(image: string) {
+    setImageModal(image)
+    setIsOpen((prev) => !prev)
+  }
+
+  const menu = [
+    {
+      label: 'Delete image',
+      isDelete: true,
+      onSelect: (id: string) => handlers.deleteFile.mutate({ id }),
+    },
+    {
+      label: 'Copy image link',
+      isCopyImage: true,
+      onSelect: (image: string) => handleCopyImage(image),
+    },
+    {
+      label: 'Open the image',
+      isCopyImage: true,
+      onSelect: (image: string) => handleOpenImage(image),
+    },
+  ]
+
   return (
     <div className="h-screen w-screen overflow-y-auto scrollbar scrollbar-track-inherit scrollbar-thumb-cyan-100 scrollbar-thumb-rounded-lg scrollbar-w-2">
       <div className="mt-20 flex justify-end gap-4 px-4 pr-8">
         <Button isLoading={isUploading} disabled={isUploading}>
-          <label>
+          <label className="cursor-pointer">
             Add file
             <input
               id="mediaPicker"
@@ -79,7 +99,14 @@ export default function Folder() {
         </Button>
         {fileId.length > 0 && (
           <>
-            <Button>
+            <Button
+              disabled={handlers.deleteAllFiles.isLoading}
+              isLoading={handlers.deleteAllFiles.isLoading}
+              onClick={() => {
+                handlers.deleteAllFiles.mutate({ fileId })
+                setFileId([])
+              }}
+            >
               <div className="relative px-3">
                 <Trash size={30} weight="fill" />
                 <span className="absolute -top-1 right-0 h-6 w-6 rounded-full bg-cyan-900 text-base">
@@ -95,13 +122,13 @@ export default function Folder() {
         )}
       </div>
 
-      {allFiles.isLoading ? (
+      {handlers.allFiles.isLoading ? (
         <div className="grid h-[70vh] place-items-center">
           <Loading />
         </div>
       ) : (
         <main className="grid grid-cols-3 place-items-center gap-10 py-4 max-md:grid-cols-2 max-sm:grid-cols-2 max-[490px]:grid-cols-1">
-          {allFiles.data?.map((file) => (
+          {handlers.allFiles.data?.map((file) => (
             <File.Root
               key={file.id}
               id={file.id}
@@ -112,7 +139,9 @@ export default function Folder() {
               setImageModal={setImageModal}
             >
               <File.Image image={file.image} />
-              <File.Title title={file.name} />
+              <File.Content title={file.name}>
+                <File.Menu id={file.id} image={file.image} items={menu} />
+              </File.Content>
             </File.Root>
           ))}
 

@@ -7,11 +7,11 @@ interface ImageProps {
 export const ImageFile = ({ image }: ImageProps) => {
   return (
     <Image
-      width={130}
       src={image}
+      width={130}
       height={100}
       alt="image uploaded"
-      className="rounded-md"
+      className="h-28 w-32 rounded-md object-cover"
     />
   )
 }

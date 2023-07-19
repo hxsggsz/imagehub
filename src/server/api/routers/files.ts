@@ -1,4 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
+import { utapi } from 'uploadthing/server'
 import { z } from 'zod'
 
 export const filesRouter = createTRPCRouter({
@@ -35,6 +36,55 @@ export const filesRouter = createTRPCRouter({
           imageKey: input.imageKey,
           name: input.name,
           Folders: { connect: { id: input.FoldersId } },
+        },
+      })
+    }),
+  deleteFile: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const fileToDelete = await ctx.prisma.images.findUnique({
+        where: {
+          id: input.id,
+        },
+      })
+
+      if (fileToDelete?.imageKey) {
+        await utapi.deleteFiles(fileToDelete.imageKey)
+      }
+
+      return ctx.prisma.images.delete({
+        where: {
+          id: input.id,
+        },
+      })
+    }),
+
+  deleteManyFiles: protectedProcedure
+    .input(
+      z.object({
+        fileId: z.string().cuid().array(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const files = await ctx.prisma.images.findMany({
+        where: {
+          id: { in: input.fileId },
+        },
+      })
+
+      for (const file of files) {
+        if (file.imageKey) {
+          await utapi.deleteFiles(file.imageKey)
+        }
+      }
+
+      await ctx.prisma.images.deleteMany({
+        where: {
+          id: { in: input.fileId },
         },
       })
     }),
