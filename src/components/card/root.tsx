@@ -1,7 +1,13 @@
+import {
+  type SetStateAction,
+  type ReactNode,
+  type Dispatch,
+  useEffect,
+} from 'react'
 import { useLongPress } from '@/hooks/useLongPress'
 import { CheckCircle } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
-import { type SetStateAction, type ReactNode, type Dispatch } from 'react'
+import { useRouter } from 'next/router'
 
 interface RootProps {
   children: ReactNode
@@ -16,9 +22,15 @@ export const Root = ({
   folderList,
   setFolderList,
 }: RootProps) => {
-  const { handlers } = useLongPress(id, folderList, setFolderList)
+  const router = useRouter()
+
+  const { event, handlers } = useLongPress(id, folderList, setFolderList)
 
   const findThisFolder = folderList.find((folderId) => folderId === id)
+
+  useEffect(() => {
+    event === 'click' && void router.replace(`/folder/${id}`)
+  }, [event])
 
   return (
     <motion.div

@@ -162,6 +162,7 @@ export const Folders = () => {
                       <X size={30} weight="bold" />
                     </Link>
                   </Button>
+
                   <Button isFull className="w-full" asChild>
                     <Link href={{ pathname: '/', query: { new: 'open' } }}>
                       <FolderNotchPlus size={30} weight="fill" />

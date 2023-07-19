@@ -40,8 +40,6 @@ export function useLongPress(
       setFolderList((prev) => [...prev, id])
       return
     }
-
-    void router.replace(`/folder/${id}`)
     setEvent('click')
   }
 
@@ -63,6 +61,7 @@ export function useLongPress(
   }
 
   return {
+    event,
     handlers: {
       onClick: handleOnClick,
       onMouseDown: handleOnMouseDown,

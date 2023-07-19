@@ -8,10 +8,10 @@ export const ImageFile = ({ image }: ImageProps) => {
   return (
     <Image
       width={130}
-      height={100}
       src={image}
+      height={100}
       alt="image uploaded"
-      className="rounded-md border-2 border-b-4 border-cyan-700"
+      className="rounded-md"
     />
   )
 }
