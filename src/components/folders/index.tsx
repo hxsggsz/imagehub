@@ -91,7 +91,7 @@ export const Folders = () => {
   }
 
   return (
-    <div className="flex h-screen w-full flex-col bg-cyan-900 pt-4 max-md:absolute max-md:inset-0 max-md:z-20">
+    <div className="flex h-screen w-full flex-col bg-cyan-900 pt-14 max-md:absolute max-md:inset-0 max-md:z-20">
       {router.query.new ? (
         <>
           <Form.Back />
@@ -172,6 +172,8 @@ export const Folders = () => {
                   {folderList.length > 0 && (
                     <Button
                       isFull
+                      isLoading={handlers.deleteManyFolders.isLoading}
+                      disabled={handlers.deleteManyFolders.isLoading}
                       onClick={() => {
                         resetFolderList()
                         handlers.deleteManyFolders.mutate({

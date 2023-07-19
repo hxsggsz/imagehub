@@ -100,12 +100,30 @@ export const folderRouter = createTRPCRouter({
   deleteFolder: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
-      // todo: delete the images inside the folder
       const folderImage = await ctx.prisma.folders.findUnique({
         where: {
           id: input.id,
         },
       })
+
+      if (!folderImage) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'folder not found',
+        })
+      }
+
+      const filesInsideFolder = await ctx.prisma.images.findMany({
+        where: {
+          foldersId: folderImage.id,
+        },
+      })
+
+      for (const files of filesInsideFolder) {
+        if (files.imageKey) {
+          await utapi.deleteFiles(files.imageKey)
+        }
+      }
 
       if (folderImage?.backgroundImageKey) {
         await utapi.deleteFiles(folderImage.backgroundImageKey)
@@ -130,6 +148,20 @@ export const folderRouter = createTRPCRouter({
           id: { in: input.id },
         },
       })
+
+      const folderImageIds = folderImage.map((folder) => folder.id)
+
+      const filesInsideFolder = await ctx.prisma.images.findMany({
+        where: {
+          foldersId: { in: folderImageIds },
+        },
+      })
+
+      for (const files of filesInsideFolder) {
+        if (files.imageKey) {
+          await utapi.deleteFiles(files.imageKey)
+        }
+      }
 
       for (const folder of folderImage) {
         if (folder.backgroundImageKey) {

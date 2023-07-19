@@ -1,4 +1,4 @@
-import { Trash, X } from '@phosphor-icons/react'
+import { ArrowLeft, Trash, X } from '@phosphor-icons/react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { type ChangeEvent, useState } from 'react'
@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import { Button } from '@/components/button'
 import { Loading } from '@/components/loading.tsx/loading'
 import { useFiles } from '@/hooks/useFiles'
+import Link from 'next/link'
 
 export default function Folder() {
   const router = useRouter()
@@ -83,7 +84,11 @@ export default function Folder() {
 
   return (
     <div className="h-screen w-screen overflow-y-auto scrollbar scrollbar-track-inherit scrollbar-thumb-cyan-100 scrollbar-thumb-rounded-lg scrollbar-w-2">
-      <div className="mt-20 flex justify-end gap-4 px-4 pr-8">
+      <div className="mt-20 flex justify-between gap-4 px-4 pr-8">
+        <Link href="/">
+          <ArrowLeft size={32} weight="bold" />
+        </Link>
+
         <Button isLoading={isUploading} disabled={isUploading}>
           <label className="cursor-pointer">
             Add file
@@ -97,6 +102,7 @@ export default function Folder() {
             />
           </label>
         </Button>
+
         {fileId.length > 0 && (
           <>
             <Button
@@ -122,9 +128,35 @@ export default function Folder() {
         )}
       </div>
 
-      {handlers.allFiles.isLoading ? (
+      {handlers.allFiles.isLoading || !handlers.allFiles.data ? (
         <div className="grid h-[70vh] place-items-center">
           <Loading />
+        </div>
+      ) : handlers.allFiles.data && handlers.allFiles.data.length < 1 ? (
+        <div className="grid h-[70vh] place-items-center">
+          <h1 className="text-4xl font-bold">No image inside yet</h1>
+          <Image
+            width={400}
+            height={400}
+            src="/empty-files.png"
+            alt="woman looking to a computer with no data"
+          />
+          <h2 className="text-xl font-semibold">
+            {' '}
+            click{' '}
+            <label className="cursor-pointer underline hover:opacity-50">
+              here{' '}
+              <input
+                id="mediaPicker"
+                name="mediaPicker"
+                accept="image/*"
+                type="file"
+                className="hidden"
+                onChange={handleImage}
+              />
+            </label>{' '}
+            and store your first image!{' '}
+          </h2>
         </div>
       ) : (
         <main className="grid grid-cols-3 place-items-center gap-10 py-4 max-md:grid-cols-2 max-sm:grid-cols-2 max-[490px]:grid-cols-1">
