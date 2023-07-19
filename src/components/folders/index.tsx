@@ -121,6 +121,7 @@ export const Folders = () => {
               </Form.Error>
             )}
             <Form.Submit
+              className="float-right"
               IsLoading={handlers.createFolder.isLoading || isUploading}
               disabled={
                 handlers.createFolder.isLoading ||
@@ -149,14 +150,19 @@ export const Folders = () => {
                   initial={{ y: -100 }}
                   animate={{ y: 0 }}
                   exit={{ y: -100 }}
-                  className="mb-20 flex w-full items-center gap-4 px-4"
+                  className="my-14 flex w-full items-center gap-4 px-4"
                 >
-                  <Button asChild className="w-full" onClick={resetFolderList}>
+                  <Button
+                    asChild
+                    isFull
+                    className="w-full"
+                    onClick={resetFolderList}
+                  >
                     <Link href="/">
                       <X size={30} weight="bold" />
                     </Link>
                   </Button>
-                  <Button className="w-full" asChild>
+                  <Button isFull className="w-full" asChild>
                     <Link href={{ pathname: '/', query: { new: 'open' } }}>
                       <FolderNotchPlus size={30} weight="fill" />
                     </Link>
@@ -164,6 +170,7 @@ export const Folders = () => {
 
                   {folderList.length > 0 && (
                     <Button
+                      isFull
                       onClick={() => {
                         resetFolderList()
                         handlers.deleteManyFolders.mutate({

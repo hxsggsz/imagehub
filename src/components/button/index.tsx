@@ -8,18 +8,20 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
   asChild?: boolean
   isLoading?: boolean
+  isFull?: boolean
 }
 
 export const Button = ({
   children,
   asChild,
   isLoading,
+  isFull = false,
   ...props
 }: ButtonProps) => {
   const Comp = asChild ? Slot : 'button'
 
   return (
-    <motion.div layout className="w-full">
+    <motion.div layout className={`${isFull ? 'w-full' : 'max-md:w-full'}`}>
       <Comp
         {...props}
         className={twMerge(

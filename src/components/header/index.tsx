@@ -5,9 +5,9 @@ export const Header = () => {
   const { data: session } = useSession()
 
   return (
-    <header className="fixed left-0 top-0 flex items-center py-3 pl-8 max-md:w-full max-md:border-b-2 max-md:border-slate-900/20">
+    <header className="fixed left-0 top-0 flex w-full items-center py-3 pl-8 backdrop-blur-sm max-md:w-full max-md:border-b-2 max-md:border-slate-900/20">
       {session ? (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-3">
           <Avatar.Root className="inline-flex h-12 w-12 select-none items-center justify-center overflow-hidden rounded-full align-middle">
             <Avatar.Image
               className="h-full w-full rounded-[inherit] object-cover"
@@ -17,7 +17,7 @@ export const Header = () => {
             <Avatar.Fallback className="flex h-full w-full items-center justify-center bg-slate-700/10" />
           </Avatar.Root>
 
-          <div className="">
+          <div className="flex flex-col justify-end">
             <p>
               Hi,{' '}
               <span className="font-medium text-cyan-700">

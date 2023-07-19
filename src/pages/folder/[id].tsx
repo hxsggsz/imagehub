@@ -17,6 +17,7 @@ export default function Folder() {
   const folderId = id && id.toString()
 
   const [isOpen, setIsOpen] = useState(false)
+  const [imageModal, setImageModal] = useState('')
 
   const ctx = api.useContext()
   const allFiles = api.files.getAll.useQuery({ id: folderId! })
@@ -61,9 +62,9 @@ export default function Folder() {
   })
 
   return (
-    <>
-      <div className="mt-20 flex gap-4 px-4 pr-8">
-        <Button>
+    <div className="h-screen w-screen overflow-y-auto scrollbar scrollbar-track-inherit scrollbar-thumb-cyan-100 scrollbar-thumb-rounded-lg scrollbar-w-2">
+      <div className="mt-20 flex justify-end gap-4 px-4 pr-8">
+        <Button isLoading={isUploading} disabled={isUploading}>
           <label>
             Add file
             <input
@@ -91,46 +92,50 @@ export default function Folder() {
         </Button>
       </div>
 
-      <main className="grid h-screen place-items-center">
+      <main className="grid grid-cols-3 place-items-center gap-10 py-4 max-md:grid-cols-2 max-sm:grid-cols-2 max-[490px]:grid-cols-1">
         {allFiles.data?.map((file) => (
           <>
-            <File.Root key={file.id} setIsOpen={setIsOpen}>
+            <File.Root
+              key={file.id}
+              setImageModal={setImageModal}
+              image={file.image}
+              setIsOpen={setIsOpen}
+            >
               <File.Image image={file.image} />
               <File.Title title={file.name} />
             </File.Root>
-
-            <Modal.Root open={isOpen} onOpenChange={setIsOpen}>
-              <Modal.Overlay className="fixed inset-0 z-50 bg-black/60" />
-              <AnimatePresence>
-                {/* this condition is for framer motion do the exit animation because that's how AnimatePresence works */}
-                {isOpen && (
-                  <Modal.Content
-                    forceMount
-                    className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]"
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                    >
-                      <Modal.Close className="fixed right-0 top-0 rounded-lg bg-cyan-700 p-1 text-cyan-100">
-                        <X size={32} weight="bold" />
-                      </Modal.Close>
-                      <Image
-                        width={800}
-                        height={800}
-                        alt={`${file.name} image`}
-                        src={file.image}
-                        className="rounded-md border-2 border-b-4 border-cyan-700"
-                      />
-                    </motion.div>
-                  </Modal.Content>
-                )}
-              </AnimatePresence>
-            </Modal.Root>
           </>
         ))}
+        <Modal.Root open={isOpen} onOpenChange={setIsOpen}>
+          <Modal.Overlay className="fixed inset-0 z-50 bg-black/60" />
+          <AnimatePresence>
+            {/* this condition is for framer motion do the exit animation because that's how AnimatePresence works */}
+            {isOpen && (
+              <Modal.Content
+                forceMount
+                className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]"
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                >
+                  <Modal.Close className="fixed right-0 top-0 rounded-lg bg-cyan-700 p-1 text-cyan-100">
+                    <X size={32} weight="bold" />
+                  </Modal.Close>
+                  <Image
+                    width={600}
+                    height={600}
+                    src={imageModal}
+                    alt="image for modal"
+                    className="max-h-[600px] rounded-md border-2 border-b-4 border-cyan-700 object-contain"
+                  />
+                </motion.div>
+              </Modal.Content>
+            )}
+          </AnimatePresence>
+        </Modal.Root>
       </main>
-    </>
+    </div>
   )
 }
