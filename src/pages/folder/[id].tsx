@@ -62,8 +62,8 @@ export default function Folder() {
 
   return (
     <>
-      <div className="mt-20 flex w-40 flex-col gap-4 px-4">
-        <Button className="w-full">
+      <div className="mt-20 flex gap-4 px-4 pr-8">
+        <Button>
           <label>
             Add file
             <input
@@ -76,7 +76,7 @@ export default function Folder() {
             />
           </label>
         </Button>
-        <Button className="w-full">
+        <Button>
           <label>
             Add file
             <input

@@ -9,7 +9,7 @@ export const CreateFolder = () => {
   return (
     <>
       {sessionData ? (
-        <div>
+        <div className="relative">
           <Image
             width={100}
             height={100}
@@ -23,14 +23,14 @@ export const CreateFolder = () => {
           <p className="mb-2 text-2xl">
             Add a new folder to organize your files
           </p>
-          <Button className="max-md:hidden" asChild>
+          <Button className="absolute mt-2 max-md:hidden" asChild>
             <Link href={{ pathname: '/', query: { new: 'open' } }}>
               <FolderNotchPlus size={24} weight="bold" />
               Create new Folder
             </Link>
           </Button>
 
-          <Button className="md:hidden" asChild>
+          <Button className="absolute mt-2 md:hidden" asChild>
             <Link href={{ pathname: '/', query: { folders: 'open' } }}>
               <FolderNotchPlus size={24} weight="bold" />
               See your folders
