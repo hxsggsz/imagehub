@@ -1,5 +1,5 @@
 <div id="readme-top" align="center">
-  <a href="https://make-decisions.netlify.app/" target="_blank">
+  <a href="https://imagehub-hxsggsz.netlify.app/" target="_blank">
   <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/103784814/254757106-a90cb75c-039f-42f3-af50-2e7413ddcd4c.png"/>
 </a>
   
@@ -16,7 +16,7 @@
 <img src="http://img.shields.io/static/v1?label=STATUS&message=Concluido&color=GREEN&style=for-the-badge"/>
 </div>
   
-  <a href="https://make-decisions.netlify.app/" target="_blank">Confira aqui o site no ar!</a> <br>
+  <a href="https://imagehub-hxsggsz.netlify.app/" target="_blank">Confira aqui o site no ar!</a> <br>
   
 <h1 id="descricao-do-projeto"> ✏ Descrição do projeto<h1>
 
@@ -46,7 +46,7 @@ E gerenciar imagens dentro das suas pastas
 
 <h1 id="acesso-ao-projeto"> 📂 Acesso ao projeto<h1>
 
-você pode utilizar o projeto <a href="https://make-decisions.netlify.app/" target="_blank">aqui</a>
+você pode utilizar o projeto <a href="https://imagehub-hxsggsz.netlify.app/" target="_blank">aqui</a>
 
 <h1 id="autor"> 👦🏻 Autor<h1>
 
