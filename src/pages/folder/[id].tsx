@@ -66,6 +66,24 @@ export default function Folder() {
     setIsOpen((prev) => !prev)
   }
 
+  async function handleDonwloadImage(image: string) {
+    const response = await fetch(image)
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(new Blob([blob]))
+
+    const link = document.createElement('a')
+    link.href = url
+
+    link.setAttribute('download', 'imagem.jpg')
+    link.style.display = 'none'
+
+    document.body.appendChild(link)
+    link.click()
+
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
+
   const menu = [
     {
       label: 'Delete image',
@@ -81,6 +99,11 @@ export default function Folder() {
       label: 'Open the image',
       isCopyImage: true,
       onSelect: (image: string) => handleOpenImage(image),
+    },
+    {
+      label: 'Download the image',
+      isCopyImage: true,
+      onSelect: (image: string) => handleDonwloadImage(image),
     },
   ]
 
