@@ -1,12 +1,10 @@
 import { useState, useRef, type Dispatch, type SetStateAction } from 'react'
-import { useRouter } from 'next/router'
 
 export function useLongPress(
   id: string,
   folderList: string[],
   setFolderList: Dispatch<SetStateAction<string[]>>,
 ) {
-  const router = useRouter()
   const [event, setEvent] = useState('')
 
   const timerRef = useRef<ReturnType<typeof setTimeout>>()

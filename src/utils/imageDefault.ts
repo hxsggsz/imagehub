@@ -1,5 +1,4 @@
 export function imageDefault(number: number): string {
-  // return ''
   switch (number) {
     case 1:
       return 'https://i.pinimg.com/564x/d0/b1/d2/d0b1d2467d29fdaec3b3fd1f6c627dd5.jpg'

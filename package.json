@@ -7,7 +7,7 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "lint:fix": "eslint src --ext .tsx --fix",
+    "lint:fix": "eslint src --ext .ts(x) --fix",
     "start": "next start"
   },
   "dependencies": {
