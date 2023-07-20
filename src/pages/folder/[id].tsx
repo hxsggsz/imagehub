@@ -11,6 +11,7 @@ import { Button } from '@/components/button'
 import { Loading } from '@/components/loading.tsx/loading'
 import { useFiles } from '@/hooks/useFiles'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 export default function Folder() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export default function Folder() {
   const [fileId, setFileId] = useState<string[]>([])
 
   const { handlers } = useFiles(folderId)
+  const { data } = useSession()
 
   function handleImage(ev: ChangeEvent<HTMLInputElement>) {
     const { files } = ev.target
@@ -89,41 +91,45 @@ export default function Folder() {
           <ArrowLeft size={32} weight="bold" />
         </Link>
 
-        <Button isLoading={isUploading} disabled={isUploading}>
-          <label className="cursor-pointer">
-            Add file
-            <input
-              id="mediaPicker"
-              name="mediaPicker"
-              accept="image/*"
-              type="file"
-              className="hidden"
-              onChange={handleImage}
-            />
-          </label>
-        </Button>
-
-        {fileId.length > 0 && (
+        {data?.user && (
           <>
-            <Button
-              disabled={handlers.deleteAllFiles.isLoading}
-              isLoading={handlers.deleteAllFiles.isLoading}
-              onClick={() => {
-                handlers.deleteAllFiles.mutate({ fileId })
-                setFileId([])
-              }}
-            >
-              <div className="relative px-3">
-                <Trash size={30} weight="fill" />
-                <span className="absolute -top-1 right-0 h-6 w-6 rounded-full bg-cyan-900 text-base">
-                  {fileId.length}
-                </span>
-              </div>
+            <Button isLoading={isUploading} disabled={isUploading}>
+              <label className="cursor-pointer">
+                Add file
+                <input
+                  id="mediaPicker"
+                  name="mediaPicker"
+                  accept="image/*"
+                  type="file"
+                  className="hidden"
+                  onChange={handleImage}
+                />
+              </label>
             </Button>
 
-            <Button onClick={() => setFileId([])}>
-              <X size={30} weight="bold" />
-            </Button>
+            {fileId.length > 0 && (
+              <>
+                <Button
+                  disabled={handlers.deleteAllFiles.isLoading}
+                  isLoading={handlers.deleteAllFiles.isLoading}
+                  onClick={() => {
+                    handlers.deleteAllFiles.mutate({ fileId })
+                    setFileId([])
+                  }}
+                >
+                  <div className="relative px-3">
+                    <Trash size={30} weight="fill" />
+                    <span className="absolute -top-1 right-0 h-6 w-6 rounded-full bg-cyan-900 text-base">
+                      {fileId.length}
+                    </span>
+                  </div>
+                </Button>
+
+                <Button onClick={() => setFileId([])}>
+                  <X size={30} weight="bold" />
+                </Button>
+              </>
+            )}
           </>
         )}
       </div>
@@ -141,22 +147,24 @@ export default function Folder() {
             src="/empty-files.png"
             alt="woman looking to a computer with no data"
           />
-          <h2 className="text-xl font-semibold">
-            {' '}
-            click{' '}
-            <label className="cursor-pointer underline hover:opacity-50">
-              here{' '}
-              <input
-                id="mediaPicker"
-                name="mediaPicker"
-                accept="image/*"
-                type="file"
-                className="hidden"
-                onChange={handleImage}
-              />
-            </label>{' '}
-            and store your first image!{' '}
-          </h2>
+          {data?.user && (
+            <h2 className="text-xl font-semibold">
+              {' '}
+              click{' '}
+              <label className="cursor-pointer underline hover:opacity-50">
+                here{' '}
+                <input
+                  id="mediaPicker"
+                  name="mediaPicker"
+                  accept="image/*"
+                  type="file"
+                  className="hidden"
+                  onChange={handleImage}
+                />
+              </label>{' '}
+              and store your first image!{' '}
+            </h2>
+          )}
         </div>
       ) : (
         <main className="grid grid-cols-3 place-items-center gap-10 py-4 max-md:grid-cols-2 max-sm:grid-cols-2 max-[490px]:grid-cols-1">

@@ -1,9 +1,13 @@
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '@/server/api/trpc'
 import { utapi } from 'uploadthing/server'
 import { z } from 'zod'
 
 export const filesRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: publicProcedure
     .input(
       z.object({
         id: z.string().cuid(),
